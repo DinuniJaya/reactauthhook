@@ -6,6 +6,9 @@ import { withRouter } from "react-router-dom";
 
 function RegistrationForm(props) {
     const [state , setState] = useState({
+        no_kp_baru : "",
+        username : "",
+        no_tel : "",
         email : "",
         password : "",
         confirmPassword: "",
@@ -19,20 +22,23 @@ function RegistrationForm(props) {
         }))
     }
     const sendDetailsToServer = () => {
-        if(state.email.length && state.password.length) {
+        if(state.no_kp_baru.length && state.password.length) {
             props.showError(null);
             const payload={
+                "no_kp_baru":state.no_kp_baru,
+                "username":state.username,
+                "no_tel":state.no_tel,
                 "email":state.email,
                 "password":state.password,
             }
-            axios.post(API_BASE_URL+'/user/register', payload)
+            axios.post(API_BASE_URL+'/registerakaun', payload)
                 .then(function (response) {
                     if(response.status === 200){
                         setState(prevState => ({
                             ...prevState,
                             'successMessage' : 'Registration successful. Redirecting to home page..'
                         }))
-                        localStorage.setItem(ACCESS_TOKEN_NAME,response.data.token);
+                        localStorage.setItem(response.data.token);
                         redirectToHome();
                         props.showError(null)
                     } else{
@@ -67,8 +73,42 @@ function RegistrationForm(props) {
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <form>
                 <div className="form-group text-left">
-                <label htmlFor="exampleInputEmail1">Email address</label>
-                <input type="email" 
+                <label htmlFor="">No kad pengenalan</label>
+                <input type="text" 
+                       className="form-control" 
+                       id="no_kp_baru" 
+                       aria-describedby="" 
+                       placeholder="Enter no_kp_baru" 
+                       value={state.no_kp_baru}
+                       onChange={handleChange}
+                />
+                <small id="emailHelp" className="form-text text-muted">We'll never share your no_kp_baru with anyone else.</small>
+                </div>
+                <div className="form-group text-left">
+                <label htmlFor="">Username</label>
+                <input type="text" 
+                       className="form-control" 
+                       id="username" 
+                       aria-describedby="" 
+                       placeholder="Enter username" 
+                       value={state.username}
+                       onChange={handleChange}
+                />
+                </div>
+                <div className="form-group text-left">
+                <label htmlFor="">No Tel</label>
+                <input type="text" 
+                       className="form-control" 
+                       id="no_tel" 
+                       aria-describedby="" 
+                       placeholder="Enter no_tel" 
+                       value={state.no_tel}
+                       onChange={handleChange}
+                />
+                </div>
+                <div className="form-group text-left">
+                <label htmlFor="exampleInputEmail1">email</label>
+                <input type="text" 
                        className="form-control" 
                        id="email" 
                        aria-describedby="emailHelp" 
@@ -76,7 +116,6 @@ function RegistrationForm(props) {
                        value={state.email}
                        onChange={handleChange}
                 />
-                <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group text-left">
                     <label htmlFor="exampleInputPassword1">Password</label>
